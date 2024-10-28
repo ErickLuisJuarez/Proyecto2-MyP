@@ -1,7 +1,7 @@
 program LectorDePixeles;
 
 uses
-  SysUtils, FPImage, FPReadJPEG, FPReadPNG, Classes;
+  SysUtils, FPImage, FPReadJPEG, FPReadPNG, FPWritePNG, Classes;
 
 type
   TArregloPixeles = array of array of record
@@ -16,10 +16,8 @@ var
   ColorPixel: TFPColor;
   ImagenPixeles: TArregloPixeles;
 begin
-  // Inicializar la imagen
   Imagen := TFPMemoryImage.Create(0, 0);
 
-  // Seleccionar el lector adecuado según la extensión
   if LowerCase(ExtractFileExt(NombreArchivo)) = '.jpg' then
     LectorImagen := TFPReaderJPEG.Create
   else if LowerCase(ExtractFileExt(NombreArchivo)) = '.png' then
@@ -30,11 +28,9 @@ begin
     Exit;
   end;
 
-  // Cargar la imagen
   Imagen.LoadFromFile(NombreArchivo, LectorImagen);
   SetLength(ImagenPixeles, Imagen.Width, Imagen.Height);
 
-  // Iterar sobre los píxeles y extraer valores RGB
   for Fila := 0 to Imagen.Height - 1 do
     for Columna := 0 to Imagen.Width - 1 do
     begin
@@ -44,31 +40,53 @@ begin
       ImagenPixeles[Columna, Fila].Azul := ColorPixel.Blue shr 8;
     end;
 
-  // Liberar recursos
   LectorImagen.Free;
   Imagen.Free;
 
-  // Devolver el arreglo con los píxeles
   LectorPixeles := ImagenPixeles;
 end;
 
+procedure QuitarFondo(const NombreArchivo: string; const Salida: string);
 var
-  ArchivosImagen: array[1..4] of String;
-  ImagenPixeles: TArregloPixeles;
-  I: Integer;
+  ImagenNueva: TFPMemoryImage;
+  Columna, Fila: Integer;
+  Pixeles: TArregloPixeles;
+begin
+  Pixeles := LectorPixeles(NombreArchivo);
+  ImagenNueva := TFPMemoryImage.Create(Length(Pixeles), Length(Pixeles[0]));
+  ImagenNueva.UsePalette := False;
+
+  for Fila := 0 to High(Pixeles[0]) do
+    for Columna := 0 to High(Pixeles) do
+    begin
+      if (Pixeles[Columna, Fila].Rojo < 50) and
+         (Pixeles[Columna, Fila].Verde < 50) and
+         (Pixeles[Columna, Fila].Azul < 50) then
+      begin
+        // Hacer el píxel completamente transparente si es negro
+        ImagenNueva.Colors[Columna, Fila] := FPColor(0, 0, 0, 0);
+      end
+      else
+      begin
+        ImagenNueva.Colors[Columna, Fila] := FPColor(
+          Pixeles[Columna, Fila].Rojo shl 8,
+          Pixeles[Columna, Fila].Verde shl 8,
+          Pixeles[Columna, Fila].Azul shl 8,
+          65535 // Opacidad total para los píxeles que no son negros
+        );
+      end;
+    end;
+
+  // Guardar como PNG con transparencia
+  ImagenNueva.SaveToFile(Salida, TFPWriterPNG.Create);
+  ImagenNueva.Free;
+end;
+
+var
+  ArchivoImagen: String;
 
 begin
-  // Lista de archivos de imagen
-  ArchivosImagen[1] := '../Imagenes/11838.jpg';
-  ArchivosImagen[2] := '../Imagenes/11838-clean.png';
-  ArchivosImagen[3] := '../Imagenes/11838-convolved.png';
-  ArchivosImagen[4] := '../Imagenes/11838-filter.png';
-
-  for I := 1 to 4 do
-  begin
-    // Llamada a la función LectorPixeles
-    ImagenPixeles := LectorPixeles(ArchivosImagen[I]);
-    
-    WriteLn('La imagen ', ArchivosImagen[I], ' ha sido cargada y los valores RGB han sido almacenados.');
-  end;
+  ArchivoImagen := '../Imagenes/11838.jpg';
+  QuitarFondo(ArchivoImagen, '../Imagenes/11838_sin_fondo.png');
+  WriteLn('La imagen ', ArchivoImagen, ' ha sido procesada como 11838_sin_fondo.png');
 end.
