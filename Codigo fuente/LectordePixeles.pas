@@ -4,45 +4,58 @@ uses
   SysUtils, FPImage, FPReadJPEG, FPReadPNG, FPWritePNG, Classes;
 
 type
+// Tipo de arreglo para almacenar los valores RGB de cada píxel de una imagen
   TArregloPixeles = array of array of record
     Rojo, Verde, Azul: Byte;
   end;
 
+// LectorPixeles: Lee una imagen y devuelve un arreglo con valores RGB de cada píxel.
+// Parámetros:
+// - NombreArchivo: Ruta y nombre del archivo de la imagen a leer.
+// Devuelve: Arreglo de píxeles con componentes RGB.
 function LectorPixeles(const NombreArchivo: String): TArregloPixeles;
 var
-  Imagen: TFPMemoryImage;
-  LectorImagen: TFPCustomImageReader;
-  Columna, Fila: Integer;
-  ColorPixel: TFPColor;
-  ImagenPixeles: TArregloPixeles;
+  Imagen: TFPMemoryImage; //Objeto para cargar una imagen en la memoria
+  LectorImagen: TFPCustomImageReader; //Lector de imagen JPG o PNG
+  Columna, Fila: Integer; //Variables para iterar sobre filas y columnas
+  ColorPixel: TFPColor; //Variable para almacenar el color de cada pixel
+  ImagenPixeles: TArregloPixeles; //Arreglo de pixeles con valores RGB
 begin
+//Se crea una imagen vacía en memoria
   Imagen := TFPMemoryImage.Create(0, 0);
 
+  //Selecciona el lector basado en la extensión del archivo
   if LowerCase(ExtractFileExt(NombreArchivo)) = '.jpg' then
     LectorImagen := TFPReaderJPEG.Create
   else if LowerCase(ExtractFileExt(NombreArchivo)) = '.png' then
     LectorImagen := TFPReaderPNG.Create
   else
   begin
+  //Se muestra un mensaje si el formato no es compatible y salir
     WriteLn('Formato de archivo no soportado: ', NombreArchivo);
     Exit;
   end;
 
+  // Se Carga la imagen y asignar el tamaño del arreglo según sus dimensiones
   Imagen.LoadFromFile(NombreArchivo, LectorImagen);
   SetLength(ImagenPixeles, Imagen.Width, Imagen.Height);
 
+  //Itera sobre cada fila y columna de la imagen
   for Fila := 0 to Imagen.Height - 1 do
     for Columna := 0 to Imagen.Width - 1 do
     begin
+    //Se obtiene el color del píxel en la posición actual
       ColorPixel := Imagen.Colors[Columna, Fila];
       ImagenPixeles[Columna, Fila].Rojo := ColorPixel.Red shr 8;
       ImagenPixeles[Columna, Fila].Verde := ColorPixel.Green shr 8;
       ImagenPixeles[Columna, Fila].Azul := ColorPixel.Blue shr 8;
     end;
 
+   //Se libera la memoria utilizada para lector y la imagen
   LectorImagen.Free;
   Imagen.Free;
 
+  //Devuelve el arreglo con valores RGB de cada píxel
   LectorPixeles := ImagenPixeles;
 end;
 
