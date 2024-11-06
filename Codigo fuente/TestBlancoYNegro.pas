@@ -56,8 +56,29 @@ begin
   WriteLn('La conversión y el guardado de la imagen se realizaron correctamente.');
 end;
 
+procedure TestFormatoValidoImagen;
+var
+  NombreEntrada: String;
+  Ext: String;
+begin
+  NombreEntrada := '../Imagenes/11838-clean.png';
+
+  if not FileExists(NombreEntrada) then
+  begin
+    WriteLn('Error: El archivo de entrada no existe o no se puede leer.');
+    Exit;
+  end;
+
+  Ext := UpperCase(ExtractFileExt(NombreEntrada));
+
+  Assert(Ext = '.PNG', 'El formato de la imagen no es válido. Debe ser PNG, pero se encontró: ' + Ext);
+
+  WriteLn('La imagen tiene un formato válido: ', Ext);
+end;
+
 begin
   TestEsNube;
   TestConvertirImagen;
+  TestFormatoValidoImagen;
   WriteLn('Todas las pruebas han pasado con éxito.');
 end.
