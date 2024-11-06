@@ -23,8 +23,44 @@ begin
   Assert(Resultado = False, 'El píxel negro no debe ser una nube');
 end;
 
+procedure TestConvertirImagen;
+var
+  NombreEntrada, NombreSalida: String;
+begin
+  NombreEntrada := '../Imagenes/11838-clean.png';
+  NombreSalida := '../Imagenes/11838-clean-convertido.png';
+
+  if not FileExists(NombreEntrada) then
+  begin
+    WriteLn('Error: El archivo de entrada no existe o no se puede leer.');
+    Exit;
+  end;
+
+  if not FileExists(ExtractFileDir(NombreSalida)) then
+  begin
+    WriteLn('Error: El directorio de salida no existe.');
+    Exit;
+  end;
+
+  ConvertirImagen(NombreEntrada, NombreSalida);
+
+  if not FileExists(NombreSalida) then
+  begin
+    WriteLn('Error: La imagen convertida no se ha guardado correctamente.');
+    Exit;
+  end;
+
+  if not (UpperCase(ExtractFileExt(NombreSalida)) = '.PNG') then
+  begin
+    WriteLn('Error: El formato de la imagen de salida no es PNG.');
+    Exit;
+  end;
+
+  WriteLn('La conversión y el guardado de la imagen se realizaron correctamente.');
+end;
 
 begin
   TestEsNube;
+  TestConvertirImagen;
   WriteLn('Todas las pruebas han pasado con éxito.');
 end.
