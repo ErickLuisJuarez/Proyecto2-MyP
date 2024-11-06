@@ -25,7 +25,8 @@ begin
   Imagen := TFPMemoryImage.Create(0, 0);
 
   // Selecciona el lector basado en la extensión del archivo
-  if LowerCase(ExtractFileExt(NombreArchivo)) = '.jpg' then
+  if (LowerCase(ExtractFileExt(NombreArchivo)) = '.jpg') or 
+  (LowerCase(ExtractFileExt(NombreArchivo)) = '.jpeg') then
     LectorImagen := TFPReaderJPEG.Create
   else if LowerCase(ExtractFileExt(NombreArchivo)) = '.png' then
   begin
