@@ -184,7 +184,10 @@ var
   CentroX, CentroY, Columna, Fila, TotalPixeles, PixelesNube: Integer;
   Blanco, Negro: TFPColor;
   DistanciaCuadrada: Integer;
+  IndiceCoberturaNubosa: Real;
 begin
+  Blanco.Red := 65535; Blanco.Green := 65535; Blanco.Blue := 65535;
+  Negro.Red := 0; Negro.Green := 0; Negro.Blue := 0;
   // Calcula el centro de la imagen
   CentroX := Length(Pixeles) div 2;
   CentroY := Length(Pixeles[0]) div 2;
@@ -202,15 +205,26 @@ begin
         if EsNube(Pixeles[Columna, Fila].Rojo, Pixeles[Columna, Fila].Verde, Pixeles[Columna, Fila].Azul) then
         begin
           Inc(PixelesNube);
-          Blanco.Red := 65535; Blanco.Green := 65535; Blanco.Blue := 65535; // Blanco
+          Pixeles[Columna, Fila].Rojo := Blanco.Red shr 8;
+          Pixeles[Columna, Fila].Verde := Blanco.Green shr 8;
+          Pixeles[Columna, Fila].Azul := Blanco.Blue shr 8;
         end
         else
         begin
-          Negro.Red := 0; Negro.Green := 0; Negro.Blue := 0; // Negro
+          Pixeles[Columna, Fila].Rojo := Negro.Red shr 8;
+          Pixeles[Columna, Fila].Verde := Negro.Green shr 8;
+          Pixeles[Columna, Fila].Azul := Negro.Blue shr 8;
         end;
       end;
     end;
 
+    // Calcula índice de cobertura nubosa
+  if TotalPixeles > 0 then
+    IndiceCoberturaNubosa := (PixelesNube / TotalPixeles) * 100
+  else
+    IndiceCoberturaNubosa := 0;
+
+  WriteLn('Índice de cobertura nubosa: ', IndiceCoberturaNubosa:0:2, '%');
 end;
 
 
