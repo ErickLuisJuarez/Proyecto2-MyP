@@ -220,7 +220,7 @@ begin
 
     // Calcula índice de cobertura nubosa
   if TotalPixeles > 0 then
-    IndiceCoberturaNubosa := (PixelesNube / TotalPixeles) * 100
+    IndiceCoberturaNubosa := (TotalPixeles / PixelesNube) * 100
   else
     IndiceCoberturaNubosa := 0;
 
