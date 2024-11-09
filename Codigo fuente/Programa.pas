@@ -19,6 +19,11 @@ procedure GuardarImagenRecortada(const Pixeles: TArregloPixeles; const Salida: s
 
 implementation
 
+//Función: Lector de Pixeles.
+// Carga una imagen y extrae los valores de los pixeles en un arreglo, que es una matriz
+//de registros con los componentes de cada color.
+// Parámetros: NombreArchivo: String - El nombre del archivo de imagen que se va a cargar.
+// Devuelve: Una matriz bidimensional (TArregloPixeles) que contiene los valores de los píxeles de la imagen cargada.
 function LectorPixeles(const NombreArchivo: String): TArregloPixeles;
 var
   Imagen: TFPMemoryImage;
@@ -57,6 +62,10 @@ begin
   LectorPixeles := ImagenPixeles;
 end;
 
+//Función: Minima.
+// Compara dos valores enteros y devuelve el menor.
+// Parámetros: A, B: Integer - Los valores a comparar.
+// Devuelve: El valor más pequeño de A y B.
 function Min(A, B: Integer): Integer;
 begin
   if A < B then
@@ -65,6 +74,11 @@ begin
     Min := B;
 end;
 
+//Función: CalcularRadioCirculo.
+// Calcula el radio de un círculo que rodea el área de interés dentro de la imagen,
+// basado en los píxeles cercanos al centro de la imagen que representan la zona libre de nubes.
+// Parámetros: Pixeles: TArregloPixeles - Los valores de los píxeles de la imagen.
+// Devuelve: Un valor entero que representa el radio del círculo que rodea la zona de interés.
 function CalcularRadioCirculo(const Pixeles: TArregloPixeles): Integer;
 var
   CentroX, CentroY, Columna, Fila: Integer;
@@ -124,6 +138,10 @@ begin
   CalcularRadioCirculo := Min(Min(RadioIzquierdo, RadioDerecho), Min(RadioArriba, RadioAbajo));
 end;
 
+//Función: EsNube.
+// Determina si un color en formato RGB corresponde a una nube según el modelo HSB.
+// Parámetros: R, G, B: Byte - Los componentes rojo, verde y azul del color del píxel.
+// Devuelve: Un valor booleano que indica si el color es de una nube o no.
 function EsNube(R, G, B: Byte): Boolean;
 var
   MaxVal, MinVal: Byte;
@@ -154,6 +172,11 @@ begin
             and not ((Tono >= 200) and (Tono <= 220));
 end;
 
+//Procedimiento: ConvertirBlancoYNegro.
+// Convierte los píxeles dentro del área delimitada por el radio calculado en blanco y negro,
+// con los píxeles de nubes en blanco y el resto en negro.
+// Parámetros: Pixeles: TArregloPixeles - Los valores de los píxeles de la imagen.
+// Radio: Integer - El radio que delimita el área de interés.
 procedure ConvertirBlancoYNegro(const Pixeles: TArregloPixeles; const Radio: Integer);
 var
   CentroX, CentroY, Columna, Fila, TotalPixeles, PixelesNube: Integer;
@@ -191,6 +214,11 @@ begin
     end;
 end;
 
+//Procedimiento: GuardarImagenRecortada.
+// Guarda la imagen modificada en un archivo de salida, recortada a la zona que contiene
+// los píxeles de la imagen procesada (el círculo de interés).
+// Parámetros: Pixeles: TArregloPixeles - Los valores de los píxeles de la imagen.
+// Salida: String - El nombre del archivo de salida donde se guarda la imagen.
 procedure GuardarImagenRecortada(const Pixeles: TArregloPixeles; const Salida: string);
 var
   ImagenNueva: TFPMemoryImage;
