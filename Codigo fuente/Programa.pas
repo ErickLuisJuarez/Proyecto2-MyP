@@ -228,6 +228,33 @@ begin
 end;
 
 
+procedure GuardarImagenRecortada(const Pixeles: TArregloPixeles; const Salida: string);
+var
+  ImagenNueva: TFPMemoryImage;
+  Columna, Fila: Integer;
+begin
+  ImagenNueva := TFPMemoryImage.Create(Length(Pixeles), Length(Pixeles[0]));
+  ImagenNueva.UsePalette := False;
+
+  // Itera sobre cada píxel y asigna sus valores RGB y transparencia
+  for Fila := 0 to High(Pixeles[0]) do
+    for Columna := 0 to High(Pixeles) do
+    begin
+      ImagenNueva.Colors[Columna, Fila] := FPColor(
+        Pixeles[Columna, Fila].Rojo shl 8,
+        Pixeles[Columna, Fila].Verde shl 8,
+        Pixeles[Columna, Fila].Azul shl 8,
+        ifthen((Pixeles[Columna, Fila].Rojo = 0) and 
+               (Pixeles[Columna, Fila].Verde = 0) and 
+               (Pixeles[Columna, Fila].Azul = 0), 0, 65535) // Transparente si es negro
+      );
+    end;
+
+  // Guardar como PNG con transparencia
+  ImagenNueva.SaveToFile(Salida, TFPWriterPNG.Create);
+  ImagenNueva.Free;
+end;
+
 var
   ArchivoImagen: String;
   Pixeles: TArregloPixeles;
@@ -237,4 +264,5 @@ begin
   Pixeles := LectorPixeles(ArchivoImagen);
   Radio := CalcularRadioCirculo(Pixeles);
   ConvertirBlancoYNegro(Pixeles, Radio);
+  GuardarImagenRecortada(Pixeles, '../Imagenes/11838_final.png');
 end.  
