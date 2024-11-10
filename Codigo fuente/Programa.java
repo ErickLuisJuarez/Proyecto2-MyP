@@ -2,9 +2,17 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-
+/**
+ * La clase que calcula el índice de cobertura de nubes dentro de un círculo.
+ */
 public class Programa {
-
+  /**
+   * Lee los píxeles de una imagen y los almacena en una matriz.
+   *
+   * @param nombreArchivo Ruta del archivo de imagen a leer.
+   * @return Una matriz de objetos Pixel que representan los colores de la imagen.
+   * @throws Exception Si ocurre un error al leer el archivo.
+   */
   public static Pixel[][] lectorPixeles(String nombreArchivo) throws Exception {
     BufferedImage imagen = ImageIO.read(new File(nombreArchivo));
     int width = imagen.getWidth();
@@ -21,6 +29,12 @@ public class Programa {
     return imagenPixeles;
   }
 
+  /**
+   * Calcula el radio del círculo que contiene la imagen, basado en el centro de la matriz de píxeles.
+   *
+   * @param pixeles Matriz de píxeles de la imagen.
+   * @return El radio del círculo.
+   */
   public static int calcularRadioCirculo(Pixel[][] pixeles) {
     int centroX = pixeles.length / 2;
     int centroY = pixeles[0].length / 2;
@@ -59,7 +73,14 @@ public class Programa {
 
     return Math.min(Math.min(radioIzquierdo, radioDerecho), Math.min(radioArriba, radioAbajo));
   }
-
+  /**
+   * Determina si un píxel específico representa una nube, basado en su color RGB.
+   *
+   * @param r Componente rojo del píxel.
+   * @param g Componente verde del píxel.
+   * @param b Componente azul del píxel.
+   * @return Verdadero si el píxel representa una nube, falso en caso contrario.
+   */
   public static boolean esNube(int r, int g, int b) {
     int maxVal = Math.max(Math.max(r, g), b);
     int minVal = Math.min(Math.min(r, g), b);
@@ -89,7 +110,13 @@ public class Programa {
 
     return (brillo > 0.8) && (saturacion < 0.2) && !(tono >= 200 && tono <= 220);
   }
-
+  /**
+   * Convierte la imagen en blanco y negro, considerando solo los píxeles dentro del radio del círculo.
+   *
+   * @param pixeles Matriz de píxeles de la imagen original.
+   * @param radio   Radio del círculo a procesar.
+   * @return Matriz de píxeles en blanco y negro.
+   */
   public static Pixel[][] convertirBlancoYNegro(Pixel[][] pixeles, int radio) {
     int centroX = pixeles.length / 2;
     int centroY = pixeles[0].length / 2;
@@ -159,7 +186,13 @@ public class Programa {
   }
 }
 
-
+  /**
+   * Calcula el índice de cobertura nubosa en un círculo de la imagen.
+   *
+   * @param pixeles Matriz de píxeles en blanco y negro.
+   * @param radio   Radio del círculo.
+   * @return El porcentaje de píxeles que representan nubes dentro del círculo.
+   */
   public static double calcularIndice(Pixel[][] pixeles, int radio) {
     int centroX = pixeles.length / 2;
     int centroY = pixeles[0].length / 2;
