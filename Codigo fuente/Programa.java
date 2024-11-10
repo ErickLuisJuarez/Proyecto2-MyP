@@ -112,7 +112,12 @@ public class Programa {
 
     return pixelesByN;
  }
-
+     /**
+     * Guarda la imagen recortada en un archivo en la carpeta "Imagenes".
+     *
+     * @param pixeles Matriz de píxeles en blanco y negro.
+     * @param salida  Nombre del archivo de salida.
+     */
  public static void guardarImagenRecortada(Pixel[][] pixeles, String salida) {
   try {
       BufferedImage imagenNueva = new BufferedImage(pixeles.length, pixeles[0].length, BufferedImage.TYPE_INT_RGB);
