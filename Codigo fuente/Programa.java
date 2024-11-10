@@ -149,32 +149,46 @@ public class Programa {
     return pixelesByN;
  }
 
-  public static void guardarImagenRecortada(Pixel[][] pixeles, String salida) {
-    try {
-        BufferedImage imagenNueva = new BufferedImage(pixeles.length, pixeles[0].length, BufferedImage.TYPE_INT_RGB);
+ public static void guardarImagenRecortada(Pixel[][] pixeles, String salida) {
+  try {
+      BufferedImage imagenNueva = new BufferedImage(pixeles.length, pixeles[0].length, BufferedImage.TYPE_INT_RGB);
 
-        for (int fila = 0; fila < pixeles[0].length; fila++) {
-            for (int columna = 0; columna < pixeles.length; columna++) {
-                Color color = new Color(pixeles[columna][fila].rojo, pixeles[columna][fila].verde, pixeles[columna][fila].azul);
-                imagenNueva.setRGB(columna, fila, color.getRGB());
-            }
-        }
+      for (int fila = 0; fila < pixeles[0].length; fila++) {
+          for (int columna = 0; columna < pixeles.length; columna++) {
+              Color color = new Color(pixeles[columna][fila].rojo, pixeles[columna][fila].verde, pixeles[columna][fila].azul);
+              imagenNueva.setRGB(columna, fila, color.getRGB());
+          }
+      }
 
-        File archivoSalida = new File(salida);
-        if (archivoSalida.exists()) {
-            System.out.println("El archivo de salida ya existe y será sobrescrito.");
-        } else {
-            System.out.println("Creando un nuevo archivo de salida: " + salida);
-        }
+      // Ruta de salida en la carpeta "Imagenes"
+      String rutaSalida = "../Imagenes/" + salida;
+      File archivoSalida = new File(rutaSalida);
+      File directorio = archivoSalida.getParentFile();  // Obtiene el directorio de la ruta especificada
 
-        ImageIO.write(imagenNueva, "png", archivoSalida);
-        System.out.println("Imagen guardada exitosamente en: " + salida);
+      // Verifica si el directorio existe, si no, intenta crearlo
+      if (!directorio.exists()) {
+          if (directorio.mkdirs()) {
+              System.out.println("Directorio creado: " + directorio.getAbsolutePath());
+          } else {
+              System.err.println("No se pudo crear el directorio: " + directorio.getAbsolutePath());
+              return; // Termina si no se puede crear el directorio
+          }
+      }
 
-    } catch (Exception e) {
-        System.err.println("Error al guardar la imagen. Detalles: ");
-        e.printStackTrace();
-    }
+      if (archivoSalida.exists()) {
+          System.out.println("El archivo de salida ya existe y será sobrescrito.");
+      } else {
+          System.out.println("Creando un nuevo archivo de salida: " + rutaSalida);
+      }
+
+      ImageIO.write(imagenNueva, "png", archivoSalida);
+      System.out.println("Imagen guardada exitosamente en: " + rutaSalida);
+
+  } catch (Exception e) {
+      System.err.println("Error al guardar la imagen. Detalles: ");
+      e.printStackTrace();
   }
+}
 
 
   public static double calcularIndice(Pixel[][] pixeles, int radio) {
