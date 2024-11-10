@@ -20,14 +20,16 @@ Descarga el instalador desde el sitio oficial de Free Pascal: https://www.freepa
 #Uso: Para ejecutar el codigo sigue los siguientes pasos: 1.- Dirigete a la carpeta Codigo fuente con cd Codigo\ fuente/
 2.-Compila el programa principal con: fpc Programa.pas
 
-Ejecuta el programa con la opción -s (si aplica) para segmentar la imagen en blanco y negro con: ./Programa -s
+3.-Ejecuta el programa con la opción -s (si aplica) para segmentar la imagen en blanco y negro con: ./Programa -s
 
-Despues de ejecutarse aparece el indice de cobertura nubosa en la terminal y además en la carpeta imagenes se generará la imagen convertida a blanco y negro con el nombre de "11838_final.png"
+*Despues de ejecutarse con -s aparece el indice de cobertura nubosa en la terminal y además en la carpeta Imagenes se generará la imagen convertida a blanco y negro con el nombre de "11838_final.png"
+
+*Si solo se ejecuta con: ./Programa, unicamente aparecera el indice de cobertura nubosa en la terminal
 
 #Tests: Para ejecutar el codigo sigue los siguientes pasos: 1.- Dirigete a la carpeta Codigo fuente con cd Codigo\ fuente/
-Compila las pruebas unitarias con: fpc PruebaPrograma.pas
+2.-Compila las pruebas unitarias con: fpc PruebaPrograma.pas
 
-Ejecuta las pruebas unitarias con: ./PruebaPrograma
+3.-Ejecuta las pruebas unitarias con: ./PruebaPrograma
 
 
 #Integrantes del equipo y sus roles:
