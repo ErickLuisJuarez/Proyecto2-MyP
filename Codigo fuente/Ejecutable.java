@@ -29,7 +29,7 @@ public class Ejecutable {
             System.out.println("Índice de cobertura nubosa: " + indice + "%");
 
             if (bandera.equalsIgnoreCase("S")) {
-                String salida = "imagen_salida.png";
+                String salida = "imagen-seg.png";
                 Programa.guardarImagenRecortada(pixelesByN, salida);
             }
             
