@@ -14,7 +14,8 @@ function LectorPixeles(const NombreArchivo: String): TArregloPixeles;
 function Min(A, B: Integer): Integer;
 function CalcularRadioCirculo(const Pixeles: TArregloPixeles): Integer;
 function EsNube(R, G, B: Byte): Boolean;
-procedure ConvertirBlancoYNegro(const Pixeles: TArregloPixeles; const Radio: Integer);
+function ConvertirBlancoYNegro(const Pixeles: TArregloPixeles; const Radio: Integer): TArregloPixeles;
+function CalcularIndice(const Pixeles: TArregloPixeles; const Radio: Integer): Real;
 procedure GuardarImagenRecortada(const Pixeles: TArregloPixeles; const Salida: string);
 
 implementation
@@ -177,41 +178,48 @@ end;
 // con los píxeles de nubes en blanco y el resto en negro.
 // Parámetros: Pixeles: TArregloPixeles - Los valores de los píxeles de la imagen.
 // Radio: Integer - El radio que delimita el área de interés.
-procedure ConvertirBlancoYNegro(const Pixeles: TArregloPixeles; const Radio: Integer);
+// ConvertirBlancoYNegro: Convierte la imagen a blanco y negro
+// Parámetros:
+// - Pixeles: Arreglo con valores RGB de la imagen
+// - Radio: Radio del círculo central donde se detectan las nubes
+// Devuelve: El arreglo de píxeles con valores en blanco y negro
+// Función añadida para contar píxeles totales y de nube, y calcular el índice de cobertura
+function ConvertirBlancoYNegro(const Pixeles: TArregloPixeles; const Radio: Integer): TArregloPixeles;
 var
-  CentroX, CentroY, Columna, Fila, TotalPixeles, PixelesNube: Integer;
+  CentroX, CentroY, Columna, Fila: Integer;
   Blanco, Negro: TFPColor;
   DistanciaCuadrada: Integer;
+  PixelesByN: TArregloPixeles;
 begin
   Blanco.Red := 65535; Blanco.Green := 65535; Blanco.Blue := 65535;
   Negro.Red := 0; Negro.Green := 0; Negro.Blue := 0;
+  SetLength(PixelesByN, Length(Pixeles), Length(Pixeles[0]));
+  // Calcula el centro de la imagen
   CentroX := Length(Pixeles) div 2;
   CentroY := Length(Pixeles[0]) div 2;
-  TotalPixeles := 0;
-  PixelesNube := 0;
 
+  // Itera sobre cada píxel para identificar nubes y convertir a blanco y negro
   for Fila := 0 to High(Pixeles[0]) do
     for Columna := 0 to High(Pixeles) do
     begin
       DistanciaCuadrada := Sqr(Columna - CentroX) + Sqr(Fila - CentroY);
       if DistanciaCuadrada <= Sqr(Radio) then
       begin
-        Inc(TotalPixeles);
         if EsNube(Pixeles[Columna, Fila].Rojo, Pixeles[Columna, Fila].Verde, Pixeles[Columna, Fila].Azul) then
         begin
-          Inc(PixelesNube);
-          Pixeles[Columna, Fila].Rojo := Blanco.Red shr 8;
-          Pixeles[Columna, Fila].Verde := Blanco.Green shr 8;
-          Pixeles[Columna, Fila].Azul := Blanco.Blue shr 8;
+          PixelesByN[Columna, Fila].Rojo := Blanco.Red shr 8;
+          PixelesByN[Columna, Fila].Verde := Blanco.Green shr 8;
+          PixelesByN[Columna, Fila].Azul := Blanco.Blue shr 8;
         end
         else
         begin
-          Pixeles[Columna, Fila].Rojo := Negro.Red shr 8;
-          Pixeles[Columna, Fila].Verde := Negro.Green shr 8;
-          Pixeles[Columna, Fila].Azul := Negro.Blue shr 8;
+          PixelesByN[Columna, Fila].Rojo := Negro.Red shr 8;
+          PixelesByN[Columna, Fila].Verde := Negro.Green shr 8;
+          PixelesByN[Columna, Fila].Azul := Negro.Blue shr 8;
         end;
       end;
     end;
+  ConvertirBlancoYNegro := PixelesByN;
 end;
 
 //Procedimiento: GuardarImagenRecortada.
@@ -234,4 +242,31 @@ begin
   ImagenNueva.Free;
 end;
 
+function CalcularIndice(const Pixeles: TArregloPixeles; const Radio: Integer): Real;
+var
+  CentroX, CentroY, Columna, Fila, TotalPixeles, PixelesNube: Integer;
+  Blanco: TFPColor;
+  DistanciaCuadrada: Integer;
+begin
+  Blanco.Red := 65535; Blanco.Green := 65535; Blanco.Blue := 65535;
+  CentroX := Length(Pixeles) div 2;
+  CentroY := Length(Pixeles[0]) div 2;
+  TotalPixeles := 0;
+  PixelesNube := 0;
+
+  for Fila := 0 to High(Pixeles[0]) do
+    for Columna := 0 to High(Pixeles) do
+    begin
+      DistanciaCuadrada := Sqr(Columna - CentroX) + Sqr(Fila - CentroY);
+      if DistanciaCuadrada <= Sqr(Radio) then
+      begin
+        TotalPixeles += 1;
+        if (Pixeles[Columna, Fila].Rojo = Blanco.Red shr 8) and 
+           (Pixeles[Columna, Fila].Verde = Blanco.Green shr 8) and 
+           (Pixeles[Columna, Fila].Azul = Blanco.Blue shr 8) then;
+              PixelesNube += 1;
+      end;
+    end;
+  CalcularIndice := (PixelesNube / TotalPixeles) * 100;
+end;
 end.

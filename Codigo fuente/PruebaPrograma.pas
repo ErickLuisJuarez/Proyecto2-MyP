@@ -1,11 +1,9 @@
 program TestPrograma;
 
 uses
-  SysUtils, Classes, Programa;
+  SysUtils, Classes, Programa, FPImage;
 
 // Procedimiento: TestEsNube
-// Realiza pruebas unitarias para la función EsNube, verificando que se identifiquen correctamente los píxeles de nube y no nube.
-// Se prueban varios colores, como blanco, gris claro, amarillo y negro, para asegurar que la función funcione adecuadamente.
 procedure TestEsNube;
 var
   Resultado: Boolean;
@@ -24,9 +22,6 @@ begin
 end;
 
 // Procedimiento: TestLectorPixeles
-// Realiza pruebas unitarias para la función LectorPixeles, asegurándose de que la imagen se cargue correctamente
-// y que el arreglo de píxeles no esté vacío.
-// También verifica que la imagen tenga filas de píxeles.
 procedure TestLectorPixeles;
 var
   Pixeles: TArregloPixeles;
@@ -38,8 +33,6 @@ begin
 end;
 
 // Procedimiento: TestCalcularRadioCirculo
-// Realiza pruebas unitarias para la función CalcularRadioCirculo, verificando que el radio calculado sea mayor que cero
-// cuando se pasa un arreglo de píxeles como entrada.
 procedure TestCalcularRadioCirculo;
 var
   Pixeles: TArregloPixeles;
@@ -52,31 +45,44 @@ begin
 end;
 
 // Procedimiento: TestConvertirBlancoYNegro
-// Realiza pruebas unitarias para la función ConvertirBlancoYNegro, asegurándose de que la conversión de la imagen
-// a blanco y negro se haya realizado correctamente, modificando la imagen según el radio calculado.
 procedure TestConvertirBlancoYNegro;
 var
-  Pixeles: TArregloPixeles;
+  Pixeles, PixelesByN: TArregloPixeles;
   Radio: Integer;
 begin
   Pixeles := LectorPixeles('../Imagenes/11838.jpg');
   Radio := CalcularRadioCirculo(Pixeles);
-  ConvertirBlancoYNegro(Pixeles, Radio);
+  PixelesByN := ConvertirBlancoYNegro(Pixeles, Radio);
+  Assert(Length(Pixeles) = Length(PixelesByN), 'El arreglo de píxeles debe tener la misma cantidad de filas');
   WriteLn('La conversión a blanco y negro se realizó correctamente.');
 end;
 
 // Procedimiento: TestGuardarImagenRecortada
-// Realiza pruebas unitarias para la función GuardarImagenRecortada, asegurándose de que la imagen recortada
-// se guarde correctamente en el archivo especificado.
-// También verifica que el archivo de salida exista después de guardar la imagen.
 procedure TestGuardarImagenRecortada;
 var
-  Pixeles: TArregloPixeles;
+  Pixeles, PixelesByN: TArregloPixeles;
+  Radio: Integer;
 begin
   Pixeles := LectorPixeles('../Imagenes/11838.jpg');
-  GuardarImagenRecortada(Pixeles, '../Imagenes/11838_final.png');
+  Radio := CalcularRadioCirculo(Pixeles);
+  PixelesByN := ConvertirBlancoYNegro(Pixeles, Radio);
+  GuardarImagenRecortada(PixelesByN, '../Imagenes/11838_final.png');
   Assert(FileExists('../Imagenes/11838_final.png'), 'La imagen recortada no se guardó correctamente');
   WriteLn('La imagen recortada se guardó correctamente.');
+end;
+
+// Procedimiento: TestIndice
+procedure TestIndice;
+var
+  Pixeles, PixelesByN: TArregloPixeles;
+  Radio: Integer;
+  IndiceCoberturaNubosa: Real;
+begin
+  Pixeles := LectorPixeles('../Imagenes/11838.jpg');
+  Radio := CalcularRadioCirculo(Pixeles);
+  PixelesByN := ConvertirBlancoYNegro(Pixeles, Radio);
+  IndiceCoberturaNubosa := CalcularIndice(PixelesByN, Radio);
+  WriteLn('Índice de cobertura nubosa: ', IndiceCoberturaNubosa:0:2, '%');
 end;
 
 begin
@@ -85,5 +91,6 @@ begin
   TestCalcularRadioCirculo;
   TestConvertirBlancoYNegro;
   TestGuardarImagenRecortada;
+  TestIndice;
   WriteLn('Todas las pruebas han pasado con éxito.');
 end.
