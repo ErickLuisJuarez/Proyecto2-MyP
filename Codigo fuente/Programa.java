@@ -2,44 +2,8 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-import java.util.Scanner;
 
 public class Programa {
-
-  public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-    System.out.print("Por favor, ingresa la ruta de la imagen: ");
-    String nombreArchivo = scanner.nextLine();
-
-    try {
-      Pixel[][] pixeles = lectorPixeles(nombreArchivo);
-      int radio = calcularRadioCirculo(pixeles);
-      Pixel[][] pixelesByN = convertirBlancoYNegro(pixeles, radio);
-
-      String salida = "imagen_salida.png";
-      guardarImagenRecortada(pixelesByN, salida);
-
-      double indice = calcularIndice(pixelesByN, radio);
-      System.out.println("Índice de cobertura nubosa: " + indice + "%");
-
-    } catch (Exception e) {
-      System.err.println("Error al procesar la imagen. Verifica que la ruta sea correcta.");
-      e.printStackTrace();
-    } finally {
-      scanner.close();
-    }
-  }
-
-
-  public static class Pixel {
-    public int rojo, verde, azul;
-
-    public Pixel(int rojo, int verde, int azul) {
-      this.rojo = rojo;
-      this.verde = verde;
-      this.azul = azul;
-    }
-  }
 
   public static Pixel[][] lectorPixeles(String nombreArchivo) throws Exception {
     BufferedImage imagen = ImageIO.read(new File(nombreArchivo));
