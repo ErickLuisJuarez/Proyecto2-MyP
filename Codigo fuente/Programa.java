@@ -2,8 +2,34 @@ import java.awt.Color;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
+import java.util.Scanner;
 
 public class Programa {
+
+  public static void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    System.out.print("Por favor, ingresa la ruta de la imagen: ");
+    String nombreArchivo = scanner.nextLine();
+
+    try {
+      Pixel[][] pixeles = lectorPixeles(nombreArchivo);
+      int radio = calcularRadioCirculo(pixeles);
+      Pixel[][] pixelesByN = convertirBlancoYNegro(pixeles, radio);
+
+      String salida = "imagen_salida.png";
+      guardarImagenRecortada(pixelesByN, salida);
+
+      double indice = calcularIndice(pixelesByN, radio);
+      System.out.println("Índice de cobertura nubosa: " + indice + "%");
+
+    } catch (Exception e) {
+      System.err.println("Error al procesar la imagen. Verifica que la ruta sea correcta.");
+      e.printStackTrace();
+    } finally {
+      scanner.close();
+    }
+  }
+
 
   public static class Pixel {
     public int rojo, verde, azul;
@@ -112,27 +138,44 @@ public class Programa {
           if (esNube(pixeles[columna][fila].rojo, pixeles[columna][fila].verde, pixeles[columna][fila].azul)) {
             pixelesByN[columna][fila] = new Pixel(255, 255, 255);
           } else {
-            pixelesByN[columna][fila] = new Pixel(0, 0, 0);
-          }
+                    pixelesByN[columna][fila] = new Pixel(0, 0, 0);
+                }
+            } else {
+                pixelesByN[columna][fila] = new Pixel(0, 0, 0);
+            }
         }
-      }
     }
 
     return pixelesByN;
-  }
+ }
 
-  public static void guardarImagenRecortada(Pixel[][] pixeles, String salida) throws Exception {
-    BufferedImage imagenNueva = new BufferedImage(pixeles.length, pixeles[0].length, BufferedImage.TYPE_INT_RGB);
+  public static void guardarImagenRecortada(Pixel[][] pixeles, String salida) {
+    try {
+        BufferedImage imagenNueva = new BufferedImage(pixeles.length, pixeles[0].length, BufferedImage.TYPE_INT_RGB);
 
-    for (int fila = 0; fila < pixeles[0].length; fila++) {
-      for (int columna = 0; columna < pixeles.length; columna++) {
-        Color color = new Color(pixeles[columna][fila].rojo, pixeles[columna][fila].verde, pixeles[columna][fila].azul);
-        imagenNueva.setRGB(columna, fila, color.getRGB());
-      }
+        for (int fila = 0; fila < pixeles[0].length; fila++) {
+            for (int columna = 0; columna < pixeles.length; columna++) {
+                Color color = new Color(pixeles[columna][fila].rojo, pixeles[columna][fila].verde, pixeles[columna][fila].azul);
+                imagenNueva.setRGB(columna, fila, color.getRGB());
+            }
+        }
+
+        File archivoSalida = new File(salida);
+        if (archivoSalida.exists()) {
+            System.out.println("El archivo de salida ya existe y será sobrescrito.");
+        } else {
+            System.out.println("Creando un nuevo archivo de salida: " + salida);
+        }
+
+        ImageIO.write(imagenNueva, "png", archivoSalida);
+        System.out.println("Imagen guardada exitosamente en: " + salida);
+
+    } catch (Exception e) {
+        System.err.println("Error al guardar la imagen. Detalles: ");
+        e.printStackTrace();
     }
-
-    ImageIO.write(imagenNueva, "png", new File(salida));
   }
+
 
   public static double calcularIndice(Pixel[][] pixeles, int radio) {
     int centroX = pixeles.length / 2;
