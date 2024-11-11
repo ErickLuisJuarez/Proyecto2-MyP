@@ -110,6 +110,7 @@ public class Programa {
 
     return (brillo > 0.8) && (saturacion < 0.2) && !(tono >= 200 && tono <= 220);
   }
+
   /**
    * Convierte la imagen en blanco y negro, considerando solo los píxeles dentro del radio del círculo.
    *
@@ -139,6 +140,7 @@ public class Programa {
 
     return pixelesByN;
  }
+ 
      /**
      * Guarda la imagen recortada en un archivo en la carpeta "Imagenes".
      *
