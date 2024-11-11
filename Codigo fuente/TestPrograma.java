@@ -1,5 +1,9 @@
 public class TestPrograma {
     
+    /**
+     * Prueba de la clase Pixel.
+     * Crea una instancia de Pixel con valores RGB específicos y muestra los valores de sus componentes de color.
+     */
     public static void testPixel(){
         System.out.println("Test de la clase Pixel:");
         Pixel pixel = new Pixel(255, 100, 50);
@@ -8,6 +12,11 @@ public class TestPrograma {
         System.out.println("Azul: " + pixel.azul);
     }
 
+    /**
+     * Prueba del lector de píxeles desde un archivo de imagen.
+     * Muestra los valores RGB del primer píxel en la matriz obtenida.
+     * @param archivo Ruta del archivo de imagen JPEG a procesar.
+     */
     public static void testLectorPixeles(String archivo) {
         System.out.println("\nTest de lectorPixeles:");
         try {
@@ -21,6 +30,11 @@ public class TestPrograma {
         }
     }
 
+     /**
+     * Prueba del cálculo del radio del círculo en la imagen.
+     * Muestra el radio calculado a partir de la matriz de píxeles.
+     * @param archivo Ruta del archivo de imagen JPEG a procesar.
+     */
     public static void testCalcularRadioCirculo(String archivo) {
         System.out.println("\nTest de calcularRadioCirculo:");
         try {
@@ -32,7 +46,12 @@ public class TestPrograma {
         }
     }
 
-     public static void testConvertirBlancoYNegro(String archivo) {
+    /**
+     * Prueba de la conversión de la imagen a blanco y negro.
+     * Muestra los valores RGB del primer píxel tras la conversión.
+     * @param archivo Ruta del archivo de imagen JPEG a procesar.
+     */
+    public static void testConvertirBlancoYNegro(String archivo) {
         System.out.println("\nTest de convertirBlancoYNegro:");
         try {
             Pixel[][] pixeles = Programa.lectorPixeles(archivo);
@@ -47,6 +66,11 @@ public class TestPrograma {
         }
     }
 
+    /**
+     * Prueba del cálculo del índice de cobertura nubosa (CCI).
+     * Muestra el índice calculado en porcentaje.
+     * @param archivo Ruta del archivo de imagen JPEG a procesar.
+     */
     public static void testCalcularIndice(String archivo) {
         System.out.println("\nTest de calcularIndice:");
         try {
@@ -60,7 +84,12 @@ public class TestPrograma {
         }
     }
 	
-	public static void main(String[] args){
+	/**
+     * Método principal para ejecutar las pruebas de la clase TestPrograma.
+     * Define la ruta de la imagen de prueba y ejecuta todas las pruebas.
+     * @param args Argumentos de línea de comandos (no se usan en este programa).
+     */
+    public static void main(String[] args){
 		String archivo = "../Imagenes/11838.jpg";
 		testPixel();
 		testLectorPixeles(archivo);
