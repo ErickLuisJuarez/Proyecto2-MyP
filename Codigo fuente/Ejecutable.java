@@ -17,8 +17,6 @@ public class Ejecutable {
         String ruta = System.getProperty("user.dir");
         Path rutaCompleta = Paths.get(ruta, "../Imagenes", nombreArchivo);
         Path rutaNormalizada = rutaCompleta.normalize();
-
-        System.out.println("La ruta del archivo es: " + rutaNormalizada);
         
         try { 
             Pixel[][] pixeles = Programa.lectorPixeles(rutaNormalizada.toString());

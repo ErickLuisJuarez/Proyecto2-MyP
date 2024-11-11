@@ -83,6 +83,44 @@ public class TestPrograma {
             System.err.println("Error al calcular el índice: " + e.getMessage());
         }
     }
+
+      /**
+   * Convierte la imagen en blanco y verde, usando la misma implementación que convertirBlancoYNegro.
+   * Esta prueba se realiza para tener una mejor visualización del espacio del círculo que se toma dentro de la imagen.
+   * Además de probar la funcionalidad de la función guardarImagenRecortada.
+   * 
+   * @param pixeles Matriz de píxeles de la imagen original.
+   * @param radio   Radio del círculo a procesar.
+   */
+  public static void testConvertirBlancoYVerde(String archivo) {
+    System.out.println("\nTest de convertirBlancoYVerde:");
+    try {
+        Pixel[][] pixeles = Programa.lectorPixeles(archivo);
+        int radio = Programa.calcularRadioCirculo(pixeles);
+        int centroX = pixeles.length / 2;
+        int centroY = pixeles[0].length / 2;
+        Pixel[][] pixelesByN = new Pixel[pixeles.length][pixeles[0].length];
+
+        for (int fila = 0; fila < pixeles[0].length; fila++) {
+          for (int columna = 0; columna < pixeles.length; columna++) {
+            int distanciaCuadrada = (columna - centroX) * (columna - centroX) + (fila - centroY) * (fila - centroY);
+            if (distanciaCuadrada <= radio * radio) {
+              if (Programa.esNube(pixeles[columna][fila].rojo, pixeles[columna][fila].verde, pixeles[columna][fila].azul)) {
+                pixelesByN[columna][fila] = new Pixel(255, 255, 255);
+              } else {
+                        pixelesByN[columna][fila] = new Pixel(0, 255, 0);
+                    }
+                } else {
+                    pixelesByN[columna][fila] = new Pixel(0, 0, 0);
+                }
+            }
+        }
+        String salida = "BlancoYVerde";
+        Programa.guardarImagenRecortada(pixelesByN, salida);
+    } catch (Exception e) {
+        System.err.println("Error al convertir la imagen a blanco y verde: " + e.getMessage());
+    }
+ }
 	
 	/**
      * Método principal para ejecutar las pruebas de la clase TestPrograma.
@@ -96,5 +134,6 @@ public class TestPrograma {
 		testCalcularRadioCirculo(archivo);
 		testConvertirBlancoYNegro(archivo);
 		testCalcularIndice(archivo);
+        testConvertirBlancoYVerde(archivo);
 	}
 }
