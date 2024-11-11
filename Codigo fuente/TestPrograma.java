@@ -59,4 +59,13 @@ public class TestPrograma {
             System.err.println("Error al calcular el índice: " + e.getMessage());
         }
     }
+	
+	public static void main(String[] args){
+		String archivo = "../Imagenes/11838.jpg";
+		testPixel();
+		testLectorPixeles(archivo);
+		testCalcularRadioCirculo(archivo);
+		testConvertirBlancoYNegro(archivo);
+		testCalcularIndice(archivo);
+	}
 }
