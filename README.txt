@@ -2,36 +2,23 @@ Proyecto2-MYP Cobertura nubosa
 Este proyecto calcula el Índice de Cobertura Nubosa (CCI) a partir de imágenes en formato JPEG, representando la proporción de cielo cubierto por nubes en cada imagen.
 
 #Requisitos:
-Tener instalado Free Pascal
+Tener instalado JAVA
 
 #Instalación:
-Para instalar Free Pascal en tu sistema, sigue estos pasos:
+Para instalar JAVA, en la terminal escribe el siguiente comando: sudo apt install openjdk-11-jdk
 
-En Debian/Ubuntu:
-sudo apt update
-sudo apt install fpc
+#Uso: Para ejecutar el código sigue los siguientes pasos:
+1.- Dirígete a la carpeta Codigo fuente con cd Codigo\ fuente/
+2.-Compila el programa principal con: javac Ejecutable.java
+3.-Ejecuta el programa con: java Ejecutable
+4. Al ejecutarse, el programa te pedirá que ingreses el nombre del archivo seguido de la bandera. Para la entrada se tiene que escribir: 11838.jpg s, con esto el programa calculará el índice de cobertura nubosa y además generará una imagen una imagen en blanco y negro llamada: imagen-seg.png y se guardara en la carpeta Imagenes. Si en la entrada únicamente se coloca: 11838.jpg, el programa solo calculará el índice de cobertura nubosa.
 
-En macOS (usando Homebrew):
-brew install fpc
 
-En Windows:
-Descarga el instalador desde el sitio oficial de Free Pascal: https://www.freepascal.org/download.html
-
-#Uso: Para ejecutar el codigo sigue los siguientes pasos: 1.- Dirigete a la carpeta Codigo fuente con cd Codigo\ fuente/
-2.-Compila el programa principal con: fpc Programa.pas
-
-3.-Ejecuta el programa con la opción -s (si aplica) para segmentar la imagen en blanco y negro con: ./Programa -s
-
-*Despues de ejecutarse con -s aparece el indice de cobertura nubosa en la terminal y además en la carpeta Imagenes se generará la imagen convertida a blanco y negro con el nombre de "11838_final.png"
-
-*Si solo se ejecuta con: ./Programa, unicamente aparecera el indice de cobertura nubosa en la terminal
-
-#Tests: Para ejecutar el codigo sigue los siguientes pasos: 1.- Dirigete a la carpeta Codigo fuente con cd Codigo\ fuente/
-2.-Compila las pruebas unitarias con: fpc PruebaPrograma.pas
-
-3.-Ejecuta las pruebas unitarias con: ./PruebaPrograma
-
+#Tests: Para ejecutar las pruebas sigue los siguientes pasos:
+1.- Dirígete a la carpeta Codigo fuente con cd Codigo\ fuente/
+2.-Compila las pruebas con el comando: javac TestPrograma.java
+3. Ejecuta las pruebas con: java TestPrograma
 
 #Integrantes del equipo y sus roles:
-Líder del equipo: Diego Eduardo Peña Villega
-Backend: Luis Juárez Erick, Diego Eduardo Peña Villegas, Brenda Rodríguez Jiménez, Oscar Iván Sánchez González, Tomás Barrera Hernández
+Líder del equipo: diegoeduv
+Backend: ErickLuisJuarez, diegoeduv, IvanGonzalezzz, tomasbh7, brenda96011
